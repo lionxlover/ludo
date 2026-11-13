@@ -1,0 +1,127 @@
+/* ============================================================
+ * Ludo Master - css/dice.css
+ * The dice (a squircle in the active player's colour, white pips),
+ * its ready / rolling / landed states and the recent-rolls strip.
+ *
+ * #dice is moved between player panels by PlayerRenderer; until a
+ * game starts it lives in the hidden #dice-home holder.
+ * ============================================================ */
+
+.dice-home { display: none; }
+
+.dice {
+  --d: var(--dice, 52px);
+  --dc: #ffffff;                       /* face colour */
+  --dc-d: #d6d6dc;                     /* shadow side of the face */
+  --pip: #ffffff;
+  --dc-glow: rgba(0, 0, 0, 0.3);
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--d);
+  height: var(--d);
+  border-radius: 25%;
+  background:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0) 46%),
+    linear-gradient(165deg, var(--dc), var(--dc-d));
+  box-shadow:
+    0 9px 18px -6px var(--dc-glow),
+    0 2px 4px rgba(0, 0, 0, 0.16),
+    inset 0 1.5px 1px rgba(255, 255, 255, 0.6),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.16);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.dice-red    { --dc: var(--red);    --dc-d: var(--red-dark);    --dc-glow: var(--red); }
+.dice-green  { --dc: var(--green);  --dc-d: var(--green-dark);  --dc-glow: var(--green); }
+.dice-yellow { --dc: var(--yellow); --dc-d: var(--yellow-dark); --dc-glow: var(--yellow); --pip: #4a3500; }
+.dice-blue   { --dc: var(--blue);   --dc-d: var(--blue-dark);   --dc-glow: var(--blue); }
+
+.dice:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 4px; }
+
+/* ---------- Faces ---------- */
+.dice-face {
+  width: 100%;
+  height: 100%;
+  padding: 17%;
+}
+.pip-grid {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  place-items: center;
+}
+.pip {
+  width: 82%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: transparent;
+}
+.pip.on {
+  background: var(--pip);
+  box-shadow: inset 0 -1px 1.5px rgba(0, 0, 0, 0.28), 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+/* "?" while waiting for the roll. */
+.dice-idle-mark {
+  font-family: var(--font-round);
+  font-size: calc(var(--d) * 0.5);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--pip);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+/* ---------- States ---------- */
+/* Ready to roll: a wobble plus an expanding ring, like the Ludo apps. */
+.dice.clickable {
+  cursor: pointer;
+  animation: diceReady 1.5s ease-in-out infinite;
+}
+.dice.clickable::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 28%;
+  border: 2.5px solid var(--dc);
+  opacity: 0;
+  pointer-events: none;
+  animation: diceRing 1.5s ease-out infinite;
+}
+@media (hover: hover) {
+  .dice.clickable:hover { filter: brightness(1.07); }
+}
+.dice.clickable:active { transform: scale(0.9); animation: none; }
+
+.dice.rolling { animation: diceShake 0.36s ease-in-out infinite; }
+.dice.landed { animation: diceLand 0.34s var(--ease); }
+
+/* ---------- Recent rolls strip ---------- */
+.dice-history {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  min-height: 24px;
+}
+.mini-dice {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  color: #fff;
+  font: 700 12px/1 var(--font-round);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 1px 2px rgba(0, 0, 0, 0.18);
+}
+.mini-red    { background: var(--red); }
+.mini-green  { background: var(--green); }
+.mini-yellow { background: var(--yellow); color: #4a3500; }
+.mini-blue   { background: var(--blue); }

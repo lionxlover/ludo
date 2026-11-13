@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="classic">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f2f2f7">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Ludo Master">
+  <meta name="format-detection" content="telephone=no">
+  <title>Ludo Master</title>
+  <meta name="description" content="Ludo Master: the classic race home. Play against bots or friends, with teams, themes, sounds and stats.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23f2f2f7'/%3E%3Crect x='4.5' y='4.5' width='11' height='11' rx='3.4' fill='%23ff3b30'/%3E%3Crect x='16.5' y='4.5' width='11' height='11' rx='3.4' fill='%2334c759'/%3E%3Crect x='16.5' y='16.5' width='11' height='11' rx='3.4' fill='%23ffcc00'/%3E%3Crect x='4.5' y='16.5' width='11' height='11' rx='3.4' fill='%23007aff'/%3E%3C/svg%3E">
+
+  <!-- 10 stylesheets. layout.css loads last on purpose: it owns every
+       responsive rule (portrait grid, landscape three-column grid, short
+       landscape and tablet adjustments) and must win over the component
+       sheets above it. -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/menu.css">
+  <link rel="stylesheet" href="css/board.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/dice.css">
+  <link rel="stylesheet" href="css/panels.css">
+  <link rel="stylesheet" href="css/modals.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/layout.css">
+</head>
+<body data-screen="menu">
+
+  <div id="toast-container" aria-live="polite"></div>
+  <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+  <!-- ============================ MAIN MENU ============================ -->
+  <section id="screen-menu" class="screen">
+    <div class="menu-wrap">
+      <header class="menu-hero">
+        <div class="logo-cube" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        <h1 data-i18n="title">Ludo Master</h1>
+        <p class="tagline" data-i18n="tagline">The classic race home – four colours, one crown</p>
+      </header>
+
+      <div class="menu-main">
+        <nav class="mode-list" aria-label="Game modes">
+          <button id="btn-resume" class="mode-btn mode-orange hidden" type="button">
+            <span class="mode-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.2v13.6L19.2 12 8 5.2z"/></svg></span>
+            <span class="mode-txt"><b data-i18n="resume">Resume Game</b><small>Pick up where you left off</small></span>
+            <svg class="mode-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 5.5 6.5 6.5-6.5 6.5"/></svg>
+          </button>
+          <button id="btn-quick" class="mode-btn mode-red" type="button">
+            <span class="mode-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.2 2.8 5.2 13.4h5.6l-1 7.8 8-10.6h-5.6l1-7.8z"/></svg></span>
+            <span class="mode-txt"><b data-i18n="quickPlay">Quick Play</b><small>You vs 3 bots</small></span>
+            <svg class="mode-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 5.5 6.5 6.5-6.5 6.5"/></svg>
+          </button>
+          <button id="btn-custom" class="mode-btn mode-green" type="button" data-open="modal-setup">
+            <span class="mode-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8.2" r="3.3"/><path d="M3.2 19.2c0-3.3 2.5-5.6 5.8-5.6s5.8 2.3 5.8 5.6"/><circle cx="17.4" cy="9.2" r="2.6"/><path d="M16.6 14c2.8-.3 5 1.5 5.2 4.7"/></svg></span>
+            <span class="mode-txt"><b data-i18n="customGame">Custom Game</b><small>Friends, bots, teams &amp; rules</small></span>
+            <svg class="mode-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 5.5 6.5 6.5-6.5 6.5"/></svg>
+          </button>
+          <button id="btn-watch" class="mode-btn mode-blue" type="button">
+            <span class="mode-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2.6 12S6 5.6 12 5.6 21.4 12 21.4 12 18 18.4 12 18.4 2.6 12 2.6 12z"/><circle cx="12" cy="12" r="3"/></svg></span>
+            <span class="mode-txt"><b data-i18n="watchAI">Watch AI vs AI</b><small>Sit back and spectate</small></span>
+            <svg class="mode-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 5.5 6.5 6.5-6.5 6.5"/></svg>
+          </button>
+        </nav>
+
+        <div class="menu-tools">
+          <button class="tool-btn" type="button" data-open="modal-help">
+            <span class="tool-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.7 9.5a2.4 2.4 0 1 1 3.5 2.1c-.8.5-1.2 1-1.2 1.9"/><circle cx="12" cy="17" r=".8" fill="currentColor"/></svg></span>
+            <span data-i18n="howToPlay">How to Play</span>
+          </button>
+          <button class="tool-btn" type="button" data-open="modal-stats">
+            <span class="tool-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5.5 20v-8.5M12 20V4.5M18.5 20v-5.5"/></svg></span>
+            <span data-i18n="stats">Statistics</span>
+          </button>
+          <button class="tool-btn" type="button" data-open="modal-settings">
+            <span class="tool-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h9"/><path d="M17 7h3"/><path d="M4 17h3"/><path d="M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/></svg></span>
+            <span data-i18n="settings">Settings</span>
+          </button>
+        </div>
+
+        <div class="menu-quickstats" id="menu-quickstats" aria-label="Quick statistics">
+          <div class="qs-item"><b id="qs-games">0</b><span data-i18n="games">Games</span></div>
+          <div class="qs-item"><b id="qs-wins">0</b><span data-i18n="wins">Wins</span></div>
+          <div class="qs-item"><b id="qs-best">—</b><span>Best</span></div>
+        </div>
+      </div>
+
+      <footer class="menu-foot">Pure HTML + CSS + JavaScript · no frameworks, no dependencies</footer>
+    </div>
+  </section>
+
+  <!-- ============================ GAME SCREEN ============================ -->
+  <section id="screen-game" class="screen hidden">
+    <header class="topbar">
+      <div class="topbar-side topbar-left" role="toolbar" aria-label="Game">
+        <button id="btn-topmenu" class="icon-btn" type="button" title="Main menu" aria-label="Main menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 11.2 12 4l8.5 7.2"/><path d="M5.5 9.8V20h13V9.8"/><path d="M10 20v-5.5h4V20"/></svg>
+        </button>
+        <button id="btn-pause" class="icon-btn" type="button" title="Pause (P)" aria-label="Pause">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="5" width="3.6" height="14" rx="1"/><rect x="13.9" y="5" width="3.6" height="14" rx="1"/></svg>
+        </button>
+      </div>
+
+      <div class="topbar-title">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="topbar-name" data-i18n="title">Ludo Master</span>
+      </div>
+
+      <div class="topbar-side topbar-right" role="toolbar" aria-label="Options">
+        <button id="btn-sound" class="icon-btn" type="button" title="Sound (M)" aria-label="Toggle sound">
+          <svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.6l4.4 3.8V5.7L7.6 9.5H4z"/><path d="M15.6 9.2a4 4 0 0 1 0 5.6"/><path d="M18.4 6.6a8 8 0 0 1 0 10.8"/></svg>
+          <svg class="ico-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.6l4.4 3.8V5.7L7.6 9.5H4z"/><path d="m16 9.5 5 5"/><path d="m21 9.5-5 5"/></svg>
+        </button>
+        <button id="btn-theme" class="icon-btn" type="button" title="Theme (T)" aria-label="Change theme">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.2 0 1.9-.9 1.9-1.8 0-.5-.2-.9-.5-1.3-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8h2.1a4.7 4.7 0 0 0 4.7-4.7C21.5 6.6 17.2 3.5 12 3.5z"/><circle cx="7.6" cy="11.4" r="1.1" fill="currentColor"/><circle cx="10.4" cy="7.4" r="1.1" fill="currentColor"/><circle cx="15" cy="7.8" r="1.1" fill="currentColor"/></svg>
+        </button>
+        <button class="icon-btn" type="button" data-open="modal-settings" title="Settings" aria-label="Settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9"/><path d="M17 7h3"/><path d="M4 17h3"/><path d="M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- The grid places four player panels around the board (one per
+         corner, like the Ludo apps). #players-panel and each panel use
+         display:contents so their parts become grid items of .game-grid. -->
+    <div class="game-grid">
+      <div id="players-panel" class="players-panel"></div>
+
+      <div class="board-wrap">
+        <div id="board" aria-label="Ludo board"></div>
+      </div>
+
+      <div class="hud hud-l">
+        <div id="turn-banner" class="turn-banner" role="status">Welcome</div>
+        <div id="dice-history" class="dice-history" aria-label="Recent rolls"></div>
+        <span id="teams-note" class="teams-note hidden">Team mode: Red + Yellow vs Green + Blue</span>
+      </div>
+
+      <aside class="hud hud-r log-panel" aria-label="Move log">
+        <h3>Move log</h3>
+        <ul id="log-list" class="log-list"></ul>
+      </aside>
+    </div>
+
+    <!-- The dice lives here between games and moves into the active
+         player's panel every turn. #btn-roll stays for assistive tech. -->
+    <div id="dice-home" class="dice-home">
+      <div id="dice" class="dice" role="button" tabindex="0" aria-label="Roll the dice"></div>
+    </div>
+    <div class="sr-only">
+      <button id="btn-roll" type="button" tabindex="-1" data-i18n="rollDice">Roll Dice</button>
+      <div id="dice-status" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- ============================ MODALS ============================ -->
+
+  <!-- New game: a bottom sheet on phones, a centred card elsewhere. -->
+  <div class="modal" id="modal-setup" role="dialog" aria-modal="true" aria-labelledby="modal-setup-title">
+    <div class="modal-card modal-setup">
+      <div class="sheet-grabber" aria-hidden="true"></div>
+      <header class="sheet-head">
+        <h2 id="modal-setup-title" data-i18n="customGame">Custom Game</h2>
+        <button class="modal-close" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg></button>
+      </header>
+      <div class="sheet-body">
+        <h3 class="group-title">Players</h3>
+        <div id="player-setup" class="seat-grid"></div>
+        <div class="group">
+          <label class="check-row team-row">
+            <input type="checkbox" id="set-teams-menu">
+            <span>Team mode<small>Red + Yellow vs Green + Blue</small></span>
+          </label>
+        </div>
+
+        <h3 class="group-title">Rules</h3>
+        <div id="menu-rules" class="group rules-grid">
+          <label class="check-row"><input type="checkbox" data-rule="spawnOnSixOnly"><span>Need a 6 to leave the base</span></label>
+          <label class="check-row"><input type="checkbox" data-rule="extraTurnOnSix"><span>Extra turn on a 6</span></label>
+          <label class="check-row"><input type="checkbox" data-rule="extraTurnOnCapture"><span>Extra turn on capture</span></label>
+          <label class="check-row"><input type="checkbox" data-rule="extraTurnOnHome"><span>Extra turn for finishing a token</span></label>
+          <label class="check-row"><input type="checkbox" data-rule="blockades"><span>Blockades (pairs block opponents)</span></label>
+          <label class="check-row"><input type="checkbox" data-rule="exactFinish"><span>Exact roll needed to finish</span></label>
+          <label class="check-row"><input type="checkbox" data-rule="threeSixForfeit"><span>Three 6s forfeits the turn</span></label>
+        </div>
+      </div>
+      <footer class="sheet-foot">
+        <button id="btn-start" class="btn btn-primary btn-big" type="button" data-i18n="startGame">Start Game</button>
+      </footer>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-settings" role="dialog" aria-modal="true" aria-labelledby="modal-settings-title">
+    <div class="modal-card modal-settings">
+      <div class="sheet-grabber" aria-hidden="true"></div>
+      <header class="sheet-head">
+        <h2 id="modal-settings-title" data-i18n="settings">Settings</h2>
+        <button class="modal-close" type="button" data-close aria-label="Close settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg></button>
+      </header>
+
+      <div class="sheet-body">
+        <div class="settings-grid">
+          <section class="settings-col">
+            <h3 class="group-title">Appearance</h3>
+            <div class="swatch-row" role="group" aria-label="Theme">
+              <button class="swatch" type="button" data-theme-value="classic"><span class="sw-prev"><i></i><i></i><i></i><i></i></span><span class="sw-name">Light</span></button>
+              <button class="swatch" type="button" data-theme-value="neon"><span class="sw-prev"><i></i><i></i><i></i><i></i></span><span class="sw-name">Dark</span></button>
+              <button class="swatch" type="button" data-theme-value="pastel"><span class="sw-prev"><i></i><i></i><i></i><i></i></span><span class="sw-name">Sorbet</span></button>
+              <button class="swatch" type="button" data-theme-value="wood"><span class="sw-prev"><i></i><i></i><i></i><i></i></span><span class="sw-name">Walnut</span></button>
+            </div>
+
+            <h3 class="group-title">Sound &amp; motion</h3>
+            <div class="group">
+              <label class="check-row"><input type="checkbox" id="set-sound"><span>Sound effects</span></label>
+              <div class="volume-row">
+                <span class="vol-label">Volume</span>
+                <input type="range" id="set-volume" min="0" max="1" step="0.05" aria-label="Volume">
+                <output id="set-volume-val" class="vol-val">70%</output>
+              </div>
+              <label class="row">Token animation
+                <select id="set-anim"><option value="slow">Slow</option><option value="normal">Normal</option><option value="fast">Fast</option></select>
+              </label>
+              <label class="row">Bot thinking time
+                <select id="set-aispeed"><option value="slow">Slow</option><option value="normal">Normal</option><option value="fast">Fast</option></select>
+              </label>
+            </div>
+
+            <h3 class="group-title">Assists</h3>
+            <div class="group">
+              <label class="check-row"><input type="checkbox" id="set-automove"><span>Auto-move when only one option</span></label>
+              <label class="check-row"><input type="checkbox" id="set-highlights"><span>Highlight legal moves</span></label>
+            </div>
+          </section>
+
+          <section class="settings-col">
+            <h3 class="group-title">Rules</h3>
+            <div class="group rules-grid">
+              <label class="check-row"><input type="checkbox" data-rule="spawnOnSixOnly"><span>Need a 6 to leave the base</span></label>
+              <label class="check-row"><input type="checkbox" data-rule="extraTurnOnSix"><span>Extra turn on a 6</span></label>
+              <label class="check-row"><input type="checkbox" data-rule="extraTurnOnCapture"><span>Extra turn on capture</span></label>
+              <label class="check-row"><input type="checkbox" data-rule="extraTurnOnHome"><span>Extra turn for finishing a token</span></label>
+              <label class="check-row"><input type="checkbox" data-rule="blockades"><span>Blockades</span></label>
+              <label class="check-row"><input type="checkbox" data-rule="exactFinish"><span>Exact roll to finish</span></label>
+              <label class="check-row"><input type="checkbox" data-rule="threeSixForfeit"><span>Three 6s forfeit</span></label>
+            </div>
+
+            <h3 class="group-title">Data</h3>
+            <div class="group">
+              <button id="set-reset-stats" class="row-btn row-btn-danger" type="button">Reset statistics</button>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <footer class="sheet-foot">
+        <button class="btn btn-primary btn-big" type="button" data-close data-i18n="close">Done</button>
+      </footer>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-stats" role="dialog" aria-modal="true" aria-labelledby="modal-stats-title">
+    <div class="modal-card modal-stats">
+      <div class="sheet-grabber" aria-hidden="true"></div>
+      <header class="sheet-head">
+        <h2 id="modal-stats-title" data-i18n="stats">Statistics</h2>
+        <button class="modal-close" type="button" data-close aria-label="Close statistics"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg></button>
+      </header>
+      <div class="sheet-body">
+        <div class="stat-grid">
+          <div class="stat-box"><b id="stat-games">0</b><span data-i18n="games">Games</span></div>
+          <div class="stat-box"><b id="stat-rolls">0</b><span>Rolls</span></div>
+          <div class="stat-box"><b id="stat-sixes">0</b><span>Sixes</span></div>
+          <div class="stat-box"><b id="stat-captures">0</b><span data-i18n="captures">Captures</span></div>
+          <div class="stat-box"><b id="stat-tokens">0</b><span data-i18n="tokensHome">Home</span></div>
+          <div class="stat-box"><b id="stat-best">—</b><span>Best game (turns)</span></div>
+        </div>
+        <h3 class="group-title">Wins by name</h3>
+        <div class="group"><table class="win-table"><tbody id="stat-wins"></tbody></table></div>
+      </div>
+      <footer class="sheet-foot">
+        <button class="btn btn-primary btn-big" type="button" data-close data-i18n="close">Done</button>
+      </footer>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-help" role="dialog" aria-modal="true" aria-labelledby="modal-help-title">
+    <div class="modal-card modal-help">
+      <div class="sheet-grabber" aria-hidden="true"></div>
+      <header class="sheet-head">
+        <h2 id="modal-help-title" data-i18n="howToPlay">How to Play</h2>
+        <button class="modal-close" type="button" data-close aria-label="Close help"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg></button>
+      </header>
+      <div class="sheet-body">
+        <div class="help-body">
+          <h3>Goal</h3>
+          <p>Race all four of your tokens from your base, once around the board, up your home column and into the centre triangle. The first player (or team) to finish every token wins.</p>
+          <h3>On your turn</h3>
+          <p>Tap the dice (or press Space) to roll. Then tap a highlighted token, or a highlighted destination, to move. A 6 lets you roll again, but three 6s in a row forfeit the turn.</p>
+          <h3>Leaving the base</h3>
+          <p>A 6 is required to move a token out of your base onto your coloured start cell (this can be relaxed in Settings).</p>
+          <h3>Captures</h3>
+          <p>Landing on a cell occupied by a single opponent token sends it back to its base, and grants you another roll. The four coloured start cells and the four star cells are safe: nobody can be captured there.</p>
+          <h3>Blockades</h3>
+          <p>Two tokens of one colour on the same track cell form a blockade. Opponents can neither pass nor land on it. Stacked pairs are marked side by side.</p>
+          <h3>Home column &amp; finish</h3>
+          <p>After a full lap you enter your coloured home column. The centre needs an exact roll (a relaxed bouncing mode is available in Settings). Finishing a token grants another roll.</p>
+          <h3>Keyboard</h3>
+          <div class="kbd-grid">
+            <span><kbd>Space</kbd> / <kbd>Enter</kbd></span><span class="kbd-what">Roll the dice</span>
+            <span><kbd>1</kbd>–<kbd>4</kbd></span><span class="kbd-what">Move that token</span>
+            <span><kbd>Esc</kbd></span><span class="kbd-what">Close dialog / pause</span>
+            <span><kbd>M</kbd></span><span class="kbd-what">Mute sound</span>
+            <span><kbd>P</kbd></span><span class="kbd-what">Pause</span>
+            <span><kbd>T</kbd></span><span class="kbd-what">Next theme</span>
+          </div>
+          <h3>Modes</h3>
+          <p>Quick Play drops you (Red) against three bots. Custom Game supports 2-4 human hotseat players, any mix of humans and bots (Easy / Normal / Hard), and a partners mode where Red + Yellow face Green + Blue.</p>
+        </div>
+      </div>
+      <footer class="sheet-foot">
+        <button class="btn btn-primary btn-big" type="button" data-close data-i18n="close">Done</button>
+      </footer>
+    </div>
+  </div>
+
+  <div class="modal modal-center" id="modal-win" role="dialog" aria-modal="true" aria-labelledby="win-title">
+    <div class="modal-card modal-win">
+      <div class="sheet-grabber" aria-hidden="true"></div>
+      <div class="win-hero">
+        <div class="win-crown" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.8 8.2 8 11.6l4-6.6 4 6.6 4.2-3.4-1.7 9.6H5.5L3.8 8.2z"/><path d="M6 20.4h12"/></svg></div>
+        <h2 id="win-title">Victory</h2>
+        <div id="win-sub" class="win-sub hidden"></div>
+      </div>
+      <ul id="win-standings" class="standings"></ul>
+      <p class="score-legend muted">Score = total steps travelled</p>
+      <div class="modal-actions">
+        <button id="win-menu" class="btn" type="button" data-i18n="backToMenu">Main Menu</button>
+        <button id="win-rematch" class="btn btn-primary" type="button" data-i18n="rematch">Rematch</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal modal-center" id="modal-pause" data-static role="dialog" aria-modal="true" aria-labelledby="modal-pause-title">
+    <div class="modal-card modal-alert">
+      <h2 id="modal-pause-title" data-i18n="paused">Game paused</h2>
+      <p class="muted">The clock is frozen until you continue.</p>
+      <div class="modal-actions">
+        <button id="pause-resume" class="btn btn-primary" type="button" data-i18n="resumeGame">Resume</button>
+        <button id="pause-restart" class="btn" type="button" data-i18n="restart">Restart</button>
+        <button id="pause-quit" class="btn btn-danger-soft" type="button" data-i18n="quit">Quit to Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal modal-center" id="modal-quit" role="dialog" aria-modal="true" aria-labelledby="modal-quit-title">
+    <div class="modal-card modal-alert">
+      <h2 id="modal-quit-title">Leave the game?</h2>
+      <p class="muted" data-i18n="quitConfirm">Quit this game and return to the menu?</p>
+      <div class="modal-actions">
+        <button class="btn" type="button" data-close data-i18n="cancel">Cancel</button>
+        <button id="quit-confirm" class="btn btn-danger" type="button" data-i18n="confirm">Quit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 57 scripts, load order matters -->
+  <script src="js/core/constants.js"></script>
+  <script src="js/core/utils.js"></script>
+  <script src="js/core/eventBus.js"></script>
+  <script src="js/core/storage.js"></script>
+  <script src="js/core/logger.js"></script>
+  <script src="js/core/i18n.js"></script>
+  <script src="js/core/state.js"></script>
+  <script src="js/config/boardConfig.js"></script>
+  <script src="js/config/pathBuilder.js"></script>
+  <script src="js/config/safeCells.js"></script>
+  <script src="js/board/positionResolver.js"></script>
+  <script src="js/players/playerModel.js"></script>
+  <script src="js/players/playerFactory.js"></script>
+  <script src="js/rules/spawnRules.js"></script>
+  <script src="js/rules/captureRules.js"></script>
+  <script src="js/rules/blockadeRules.js"></script>
+  <script src="js/rules/finishRules.js"></script>
+  <script src="js/rules/moveValidator.js"></script>
+  <script src="js/rules/rulesEngine.js"></script>
+  <script src="js/dice/diceModel.js"></script>
+  <script src="js/players/turnManager.js"></script>
+  <script src="js/game/gameSetup.js"></script>
+  <script src="js/game/ranking.js"></script>
+  <script src="js/game/winDetector.js"></script>
+  <script src="js/ai/aiEvaluator.js"></script>
+  <script src="js/ai/aiEasy.js"></script>
+  <script src="js/ai/aiNormal.js"></script>
+  <script src="js/ai/aiHard.js"></script>
+  <script src="js/ai/aiEngine.js"></script>
+  <script src="js/board/cellManager.js"></script>
+  <script src="js/board/boardRenderer.js"></script>
+  <script src="js/board/tokenRenderer.js"></script>
+  <script src="js/board/tokenAnimator.js"></script>
+  <script src="js/board/highlightManager.js"></script>
+  <script src="js/dice/diceRenderer.js"></script>
+  <script src="js/dice/diceAnimator.js"></script>
+  <script src="js/dice/diceHistory.js"></script>
+  <script src="js/dice/diceController.js"></script>
+  <script src="js/players/playerRenderer.js"></script>
+  <script src="js/game/historyLogger.js"></script>
+  <script src="js/game/moveExecutor.js"></script>
+  <script src="js/game/gameController.js"></script>
+  <script src="js/game/autoPlay.js"></script>
+  <script src="js/ui/screenManager.js"></script>
+  <script src="js/ui/modalManager.js"></script>
+  <script src="js/ui/toast.js"></script>
+  <script src="js/ui/soundController.js"></script>
+  <script src="js/ui/themeManager.js"></script>
+  <script src="js/ui/settingsController.js"></script>
+  <script src="js/ui/statsController.js"></script>
+  <script src="js/ui/helpController.js"></script>
+  <script src="js/ui/confetti.js"></script>
+  <script src="js/ui/gameScreenController.js"></script>
+  <script src="js/ui/keyboardController.js"></script>
+  <script src="js/ui/pauseController.js"></script>
+  <script src="js/ui/menuController.js"></script>
+  <script src="js/core/main.js"></script>
+</body>
+</html>
+

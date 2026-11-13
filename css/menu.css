@@ -1,0 +1,377 @@
+/* ============================================================
+ * Ludo Master - css/menu.css
+ * Home screen: logo, big stacked mode buttons (Ludo-app style) with
+ * iOS app-icon tiles, round tool buttons, quick stats. Plus the
+ * player-setup rows used inside the "Custom Game" sheet.
+ * ============================================================ */
+
+#screen-menu {
+  min-height: var(--vh100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding:
+    calc(28px + var(--safe-t))
+    calc(20px + var(--safe-r))
+    calc(24px + var(--safe-b))
+    calc(20px + var(--safe-l));
+}
+
+.menu-wrap {
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+/* ---------- Hero ---------- */
+.menu-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+.logo-cube {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  width: 92px;
+  height: 92px;
+  margin-bottom: 8px;
+  padding: 8px;
+  border-radius: 26px;
+  background: var(--panel);
+  box-shadow: var(--shadow-2), inset 0 0 0 0.5px var(--hairline);
+  transform: rotate(-4deg);
+}
+.logo-cube span {
+  position: relative;
+  border-radius: 10px;
+  box-shadow: inset 0 1.5px 1px rgba(255, 255, 255, 0.5), inset 0 -2px 3px rgba(0, 0, 0, 0.12);
+}
+/* A single pip on each tile: the whole logo reads as four little dice. */
+.logo-cube span::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 24%;
+  height: 24%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+.logo-cube span:nth-child(1) { background: linear-gradient(160deg, var(--red), var(--red-dark)); }
+.logo-cube span:nth-child(2) { background: linear-gradient(160deg, var(--green), var(--green-dark)); }
+.logo-cube span:nth-child(3) { background: linear-gradient(160deg, var(--blue), var(--blue-dark)); }
+.logo-cube span:nth-child(4) { background: linear-gradient(160deg, var(--yellow), var(--yellow-dark)); }
+.logo-cube span:nth-child(4)::after { background: #4a3500; }
+
+.menu-hero h1 {
+  font-family: var(--font-round);
+  font-size: clamp(36px, 10vw, 46px);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+.tagline {
+  max-width: 28ch;
+  font-size: 16px;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+/* ---------- Mode buttons ---------- */
+.menu-main { display: flex; flex-direction: column; gap: 18px; }
+.mode-list { display: flex; flex-direction: column; gap: 12px; }
+
+.mode-btn {
+  --mc: var(--red);
+  --mc-d: var(--red-dark);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 78px;
+  padding: 12px 18px 12px 12px;
+  border: 0;
+  border-radius: 24px;
+  background: var(--panel);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  box-shadow: var(--shadow-1), inset 0 0 0 0.5px var(--hairline);
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+@media (hover: hover) {
+  .mode-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-2), inset 0 0 0 0.5px var(--hairline); }
+}
+.mode-btn:active { transform: scale(0.975); }
+
+.mode-red    { --mc: var(--red);    --mc-d: var(--red-dark); }
+.mode-green  { --mc: var(--green);  --mc-d: var(--green-dark); }
+.mode-blue   { --mc: var(--blue);   --mc-d: var(--blue-dark); }
+.mode-orange { --mc: var(--gold);   --mc-d: #d97500; }
+
+/* The coloured "app icon" squircle. */
+.mode-ico {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  color: #fff;
+  background:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0) 55%),
+    linear-gradient(165deg, var(--mc), var(--mc-d));
+  box-shadow: 0 6px 12px -4px var(--mc), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+}
+.mode-ico svg { width: 27px; height: 27px; }
+.mode-red .mode-ico svg,
+.mode-orange .mode-ico svg { fill: currentColor; stroke: none; }
+.mode-green .mode-ico svg,
+.mode-blue .mode-ico svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mode-txt { flex: 1; min-width: 0; }
+.mode-txt b {
+  display: block;
+  font-size: 17.5px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+.mode-txt small {
+  display: block;
+  margin-top: 2px;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+.mode-chev {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.6;
+}
+
+/* ---------- Round tool buttons ---------- */
+.menu-tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.tool-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 6px 12px;
+  border: 0;
+  border-radius: 22px;
+  background: var(--panel);
+  color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-1), inset 0 0 0 0.5px var(--hairline);
+  transition: transform 0.25s var(--ease);
+}
+.tool-btn:active { transform: scale(0.96); }
+.tool-ico {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--fill);
+  color: var(--accent-ink);
+}
+.tool-ico svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------- Quick stats ---------- */
+.menu-quickstats {
+  display: flex;
+  padding: 14px 6px;
+  border-radius: 22px;
+  background: var(--glass);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+  backdrop-filter: saturate(180%) blur(18px);
+  box-shadow: var(--shadow-1), inset 0 0 0 0.5px var(--hairline);
+}
+.qs-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.qs-item + .qs-item { border-left: 0.5px solid var(--hairline); }
+.qs-item b {
+  font: 800 23px/1.1 var(--font-round);
+  letter-spacing: -0.02em;
+}
+.qs-item span {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.menu-foot {
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+  opacity: 0.85;
+}
+
+/* ---------- Wide / short landscape: hero left, buttons right ---------- */
+@media (min-width: 820px) and (min-aspect-ratio: 5/4), (max-height: 520px) and (min-aspect-ratio: 6/5) {
+  .menu-wrap {
+    max-width: 940px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 430px);
+    align-items: center;
+    column-gap: 56px;
+    row-gap: 18px;
+  }
+  .menu-hero { gap: 12px; }
+  .logo-cube { width: 120px; height: 120px; border-radius: 34px; padding: 10px; gap: 6px; }
+  .logo-cube span { border-radius: 13px; }
+  .menu-hero h1 { font-size: clamp(44px, 5.2vw, 62px); }
+  .tagline { font-size: 18px; }
+  .menu-foot { grid-column: 1 / -1; }
+}
+
+@media (max-height: 520px) and (min-aspect-ratio: 6/5) {
+  #screen-menu { padding-top: calc(10px + var(--safe-t)); padding-bottom: calc(10px + var(--safe-b)); }
+  /* Both columns flex: the hero never gets squeezed to a sliver on a 568px phone. */
+  .menu-wrap { grid-template-columns: minmax(0, 1fr) minmax(0, min(430px, 58%)); column-gap: 28px; row-gap: 8px; }
+  .menu-main { gap: 10px; }
+  .mode-list { gap: 8px; }
+  .mode-btn { min-height: 58px; padding: 8px 14px 8px 8px; border-radius: 18px; }
+  .mode-ico { width: 42px; height: 42px; border-radius: 12px; }
+  .mode-ico svg { width: 22px; height: 22px; }
+  .mode-txt b { font-size: 15.5px; }
+  .mode-txt small { font-size: 12px; }
+  .tool-btn { flex-direction: row; justify-content: center; gap: 6px; padding: 8px 4px; border-radius: 16px; font-size: 12px; min-height: 40px; }
+  .tool-ico { width: 28px; height: 28px; }
+  .tool-ico svg { width: 15px; height: 15px; }
+  .menu-quickstats { display: none; }
+  .menu-hero h1 { font-size: clamp(27px, 4.8vw, 34px); }
+  .tagline { font-size: 14px; }
+  .logo-cube { width: 84px; height: 84px; border-radius: 24px; margin-bottom: 4px; }
+  .menu-foot { display: none; }
+}
+@media (max-height: 400px) and (min-aspect-ratio: 6/5) {
+  .tool-btn { white-space: nowrap; }
+  .tagline { display: none; }
+  .logo-cube { width: 68px; height: 68px; border-radius: 20px; padding: 6px; gap: 4px; }
+  .logo-cube span { border-radius: 8px; }
+  .menu-hero h1 { font-size: clamp(26px, 4.6vw, 32px); }
+}
+
+/* ============================================================
+ * Player setup rows (inside the Custom Game sheet)
+ * ============================================================ */
+.seat-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.seat-card {
+  /* (the in-game panels also use .seat-card; these rules are scoped to the
+   *  setup sheet through #player-setup so they never leak into the game) */
+}
+#player-setup .seat-card {
+  display: block;
+  padding: 12px;
+  border-radius: var(--r-md);
+  background: var(--group-bg);
+  box-shadow: inset 0 0 0 0.5px var(--hairline);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  opacity: 1;
+  text-align: left;
+  min-height: 0;
+  height: auto;
+  transition: opacity 0.25s ease;
+}
+#player-setup .seat-card.is-off { opacity: 0.55; }
+
+.seat-head { display: flex; align-items: center; gap: 10px; }
+.seat-avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: #fff;
+  font: 700 16px/1 var(--font-round);
+  background:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 52%),
+    linear-gradient(165deg, var(--pc), var(--pc-d));
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 2px 5px rgba(0, 0, 0, 0.18);
+}
+.seat-yellow .seat-avatar { color: #4a3500; }
+.seat-avatar svg {
+  width: 62%;
+  height: 62%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.seat-avatar svg .eye { fill: currentColor; stroke: none; }
+
+.seat-name {
+  flex: 1;
+  min-width: 0;
+  height: 40px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--fill-2);
+  color: var(--ink);
+  font: inherit;
+  font-size: 15.5px;
+  font-weight: 500;
+}
+.seat-name::placeholder { color: var(--muted); opacity: 0.8; }
+
+.seat-ctl { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+.seat-ctl .seg { flex: 1; min-width: 0; }
+.seat-level { flex: none; transition: opacity 0.2s ease; }
+.seat-level.dim { opacity: 0.4; }
+.seat-select { min-width: 94px; }
+
+@media (min-width: 640px) {
+  .seat-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* Narrowest landscape phones (568px): shrink the tool icons so the labels fit on one line. */
+@media (max-width: 620px) and (max-height: 400px) and (min-aspect-ratio: 6/5) {
+  .tool-btn { gap: 4px; padding: 8px 3px; font-size: 11.5px; }
+  .tool-ico { width: 22px; height: 22px; }
+  .tool-ico svg { width: 13px; height: 13px; }
+}

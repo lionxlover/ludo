@@ -1,0 +1,314 @@
+/* ============================================================
+ * Ludo Master - css/variables.css
+ * Design tokens. The look follows Apple's Human Interface
+ * Guidelines: iOS system colours, grouped-list surfaces, hairline
+ * separators, translucent "glass" bars and soft layered shadows.
+ *
+ * Four palettes, switched with data-theme on <html>:
+ *   classic = Light      neon = Dark (OLED black)
+ *   pastel  = Sorbet     wood = Walnut
+ * (The keys stay classic/neon/pastel/wood so saved settings keep working.)
+ * ============================================================ */
+
+
+/* ---------- Layout tokens (shared by every palette) ----------
+ * Everything the responsive layout needs to agree on lives here so
+ * layout.css, board.css and panels.css can never drift apart. */
+:root {
+  --topbar-h: 52px;      /* navigation bar height (without the safe area) */
+  --pad: 16px;           /* horizontal padding of the game screen */
+  --pad-y: 8px;          /* vertical padding of the game screen */
+  --gap: 10px;           /* gap between rows / columns of the game grid */
+  --seat-min: 62px;      /* a player panel is never shorter than this ... */
+  --seat-max: 84px;      /* ... nor taller (layout.css picks a size in between) */
+  --seat-h: var(--seat-min);
+  --dice-min: 48px;      /* smallest dice (layout.css scales it with the board) */
+  --dice: 52px;          /* dice size */
+  --hud-h: 40px;         /* portrait: height of the banner row */
+  --dice-col: 70px;      /* portrait: middle column that carries the dice */
+  --side-min: 196px;     /* landscape: narrowest side column */
+  --side-max: 320px;     /* landscape: widest side column */
+  --board-cap: 1100px;   /* the board never grows beyond this */
+
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-l: env(safe-area-inset-left, 0px);
+
+  --vh100: 100vh;        /* upgraded to the dynamic viewport height below */
+  --turn-color: var(--accent);
+
+  /* Typography: SF Pro on Apple devices, the closest system face elsewhere. */
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+          system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", Arial, sans-serif;
+  --font-round: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont,
+                system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Continuous-corner feeling radii (squircles are approximated). */
+  --r-xs: 8px;
+  --r-sm: 12px;
+  --r-md: 16px;
+  --r-lg: 22px;
+  --r-xl: 28px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);       /* the iOS "spring-like" curve */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+@supports (height: 100dvh) {
+  :root { --vh100: 100dvh; }
+}
+
+/* Native controls (select popups, scrollbars) follow the palette. */
+:root { color-scheme: light; }
+html[data-theme="neon"], html[data-theme="wood"] { color-scheme: dark; }
+
+
+/* ============================================================
+ * LIGHT  (data-theme="classic")  - iOS light, grouped background
+ * ============================================================ */
+:root,
+html[data-theme="classic"] {
+  --bg-1: #f2f2f7;                       /* systemGroupedBackground */
+  --bg-2: #e8e8ef;
+  --panel: #ffffff;                      /* secondarySystemGroupedBackground */
+  --panel-2: #f2f2f7;                    /* inset wells, slots */
+  --ink: #1c1c1e;                        /* label */
+  --muted: #6c6c70;                      /* secondaryLabel (AA on white) */
+  --accent: #0071f3;                     /* systemBlue, tuned for AA with white text */
+  --accent-2: #0058c8;
+  --accent-ink: #0063d6;                 /* blue text on panels */
+  --on-accent: #ffffff;
+  --danger: #ff3b30;
+  --danger-ink: #d70015;
+  --danger-solid: #e0281c;               /* filled destructive buttons (AA with white text) */
+  --sheet-bg: #f2f2f7;                   /* sheet / grouped-list canvas */
+  --group-bg: #ffffff;                   /* inset grouped rows */
+  --gold: #ff9500;
+  --success: #34c759;
+  --focus-ring: rgba(0, 113, 243, 0.45);
+  --accent-glow: rgba(0, 113, 243, 0.16);
+
+  --red: #ff3b30;
+  --red-dark: #c4251c;
+  --green: #34c759;
+  --green-dark: #1f9a3d;
+  --yellow: #ffcc00;
+  --yellow-dark: #b38f00;
+  --blue: #007aff;
+  --blue-dark: #0051b8;
+
+  --cell: #ffffff;
+  --cell-line: rgba(60, 60, 67, 0.16);
+  --board-bg: #ffffff;
+  --board-frame: #ffffff;
+  --star: #aeaeb2;
+  --safe-ring: rgba(60, 60, 67, 0.18);
+
+  /* Materials */
+  --glass: rgba(255, 255, 255, 0.72);
+  --glass-strong: rgba(255, 255, 255, 0.88);
+  --hairline: rgba(60, 60, 67, 0.18);
+  --fill: rgba(120, 120, 128, 0.16);     /* systemFill */
+  --fill-2: rgba(120, 120, 128, 0.10);
+  --scrim: rgba(0, 0, 0, 0.36);
+  --switch-off: rgba(120, 120, 128, 0.32);
+  --seg-on: #ffffff;
+  --seat-idle: rgba(255, 255, 255, 0.82);
+
+  --shadow-1: 0 0.5px 1px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.07);
+  --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.06), 0 14px 38px rgba(0, 0, 0, 0.12);
+  --shadow-sheet: 0 -2px 30px rgba(0, 0, 0, 0.14);
+  --radius: 16px;
+
+  --blob-a: rgba(255, 59, 48, 0.16);
+  --blob-b: rgba(52, 199, 89, 0.15);
+  --blob-c: rgba(255, 204, 0, 0.20);
+  --blob-d: rgba(0, 122, 255, 0.16);
+}
+
+
+/* ============================================================
+ * DARK  (data-theme="neon")  - iOS dark, true black
+ * ============================================================ */
+html[data-theme="neon"] {
+  --bg-1: #000000;
+  --bg-2: #0a0a0f;
+  --panel: #1c1c1e;
+  --panel-2: #2c2c2e;
+  --ink: #f2f2f7;
+  --muted: #9b9ba3;
+  --accent: #0a74f0;
+  --accent-2: #0a5fc4;
+  --accent-ink: #4da3ff;
+  --on-accent: #ffffff;
+  --danger: #ff453a;
+  --danger-ink: #ff6961;
+  --danger-solid: #d93025;
+  --sheet-bg: #1c1c1e;
+  --group-bg: #2c2c2e;
+  --gold: #ff9f0a;
+  --success: #30d158;
+  --focus-ring: rgba(77, 163, 255, 0.6);
+  --accent-glow: rgba(10, 132, 255, 0.22);
+
+  --red: #ff453a;
+  --red-dark: #c1271d;
+  --green: #30d158;
+  --green-dark: #1e9a3b;
+  --yellow: #ffd60a;
+  --yellow-dark: #b89a00;
+  --blue: #0a84ff;
+  --blue-dark: #0a5cc2;
+
+  --cell: #2c2c2e;
+  --cell-line: rgba(255, 255, 255, 0.09);
+  --board-bg: #1c1c1e;
+  --board-frame: #2c2c2e;
+  --star: #636366;
+  --safe-ring: rgba(255, 255, 255, 0.16);
+
+  --glass: rgba(28, 28, 30, 0.72);
+  --glass-strong: rgba(28, 28, 30, 0.9);
+  --hairline: rgba(84, 84, 88, 0.55);
+  --fill: rgba(120, 120, 128, 0.36);
+  --fill-2: rgba(120, 120, 128, 0.24);
+  --scrim: rgba(0, 0, 0, 0.58);
+  --switch-off: rgba(120, 120, 128, 0.46);
+  --seg-on: #636366;
+  --seat-idle: rgba(44, 44, 46, 0.78);
+
+  --shadow-1: 0 0.5px 1px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-2: 0 2px 8px rgba(0, 0, 0, 0.45), 0 16px 44px rgba(0, 0, 0, 0.55);
+  --shadow-sheet: 0 -2px 30px rgba(0, 0, 0, 0.6);
+  --radius: 16px;
+
+  --blob-a: rgba(255, 69, 58, 0.20);
+  --blob-b: rgba(48, 209, 88, 0.16);
+  --blob-c: rgba(255, 214, 10, 0.14);
+  --blob-d: rgba(10, 132, 255, 0.24);
+}
+
+
+/* ============================================================
+ * SORBET  (data-theme="pastel")  - soft, warm, candy-coloured
+ * ============================================================ */
+html[data-theme="pastel"] {
+  --bg-1: #fff4f1;
+  --bg-2: #fde7ee;
+  --panel: #ffffff;
+  --panel-2: #fff0ec;
+  --ink: #3b2f45;
+  --muted: #76688a;
+  --accent: #a24bd8;
+  --accent-2: #8737bb;
+  --accent-ink: #8a35bd;
+  --on-accent: #ffffff;
+  --danger: #ff5c6c;
+  --danger-ink: #d2263a;
+  --danger-solid: #d2263a;
+  --sheet-bg: #fff4f1;
+  --group-bg: #ffffff;
+  --gold: #ff9f5a;
+  --success: #3ecf94;
+  --focus-ring: rgba(162, 75, 216, 0.45);
+  --accent-glow: rgba(162, 75, 216, 0.16);
+
+  --red: #ff7a8a;
+  --red-dark: #d1495b;
+  --green: #4cd6a0;
+  --green-dark: #1fa878;
+  --yellow: #ffd166;
+  --yellow-dark: #c99a1c;
+  --blue: #5aaeff;
+  --blue-dark: #2c7fd4;
+
+  --cell: #ffffff;
+  --cell-line: rgba(120, 70, 100, 0.14);
+  --board-bg: #fffaf8;
+  --board-frame: #ffffff;
+  --star: #d9bccb;
+  --safe-ring: rgba(150, 90, 120, 0.2);
+
+  --glass: rgba(255, 255, 255, 0.72);
+  --glass-strong: rgba(255, 252, 250, 0.9);
+  --hairline: rgba(120, 70, 100, 0.2);
+  --fill: rgba(150, 90, 140, 0.14);
+  --fill-2: rgba(150, 90, 140, 0.09);
+  --scrim: rgba(60, 20, 60, 0.32);
+  --switch-off: rgba(150, 90, 140, 0.3);
+  --seg-on: #ffffff;
+  --seat-idle: rgba(255, 255, 255, 0.82);
+
+  --shadow-1: 0 0.5px 1px rgba(120, 60, 100, 0.07), 0 1px 3px rgba(120, 60, 100, 0.08);
+  --shadow-2: 0 2px 6px rgba(120, 60, 100, 0.07), 0 14px 38px rgba(120, 60, 100, 0.14);
+  --shadow-sheet: 0 -2px 30px rgba(120, 60, 100, 0.16);
+  --radius: 18px;
+
+  --blob-a: rgba(255, 122, 138, 0.26);
+  --blob-b: rgba(76, 214, 160, 0.22);
+  --blob-c: rgba(255, 209, 102, 0.30);
+  --blob-d: rgba(90, 174, 255, 0.24);
+}
+
+
+/* ============================================================
+ * WALNUT  (data-theme="wood")  - warm dark, maple board
+ * ============================================================ */
+html[data-theme="wood"] {
+  --bg-1: #1e1511;
+  --bg-2: #2b1f17;
+  --panel: #2e2119;
+  --panel-2: #3a2b20;
+  --ink: #f6eee3;
+  --muted: #bda98f;
+  --accent: #e3a857;
+  --accent-2: #c88a35;
+  --accent-ink: #f0c27e;
+  --on-accent: #2a1b0a;
+  --danger: #e5533d;
+  --danger-ink: #ff8a76;
+  --danger-solid: #c4412e;
+  --sheet-bg: #2e2119;
+  --group-bg: #3a2b20;
+  --gold: #f2c14e;
+  --success: #6fb35c;
+  --focus-ring: rgba(227, 168, 87, 0.6);
+  --accent-glow: rgba(227, 168, 87, 0.2);
+
+  --red: #d9483a;
+  --red-dark: #8e2b20;
+  --green: #5e9f4e;
+  --green-dark: #3d6b31;
+  --yellow: #e3a93b;
+  --yellow-dark: #9c6f1c;
+  --blue: #4f86c6;
+  --blue-dark: #2f5580;
+
+  --cell: #f4e6cc;
+  --cell-line: rgba(106, 75, 48, 0.28);
+  --board-bg: #ead7b5;
+  --board-frame: #5b3f2a;
+  --star: #8a6f4a;
+  --safe-ring: rgba(106, 75, 48, 0.4);
+
+  --glass: rgba(46, 33, 25, 0.74);
+  --glass-strong: rgba(46, 33, 25, 0.92);
+  --hairline: rgba(246, 238, 227, 0.16);
+  --fill: rgba(246, 238, 227, 0.14);
+  --fill-2: rgba(246, 238, 227, 0.09);
+  --scrim: rgba(10, 5, 2, 0.56);
+  --switch-off: rgba(246, 238, 227, 0.26);
+  --seg-on: #5a4332;
+  --seat-idle: rgba(58, 43, 32, 0.8);
+
+  --shadow-1: 0 0.5px 1px rgba(0, 0, 0, 0.45), 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-2: 0 2px 8px rgba(0, 0, 0, 0.4), 0 16px 44px rgba(0, 0, 0, 0.5);
+  --shadow-sheet: 0 -2px 30px rgba(0, 0, 0, 0.55);
+  --radius: 14px;
+
+  --blob-a: rgba(217, 72, 58, 0.18);
+  --blob-b: rgba(94, 159, 78, 0.14);
+  --blob-c: rgba(227, 169, 59, 0.16);
+  --blob-d: rgba(79, 134, 198, 0.18);
+}

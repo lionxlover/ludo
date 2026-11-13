@@ -1,0 +1,325 @@
+/* ============================================================
+ * Ludo Master - css/panels.css
+ * Player panels (one per board corner), the dice slot, the turn
+ * banner pill, the move log and the shared colour dots.
+ *
+ * Panel markup (PlayerRenderer):
+ *   .player-card.card-<colour>[.active][.finished]   display: contents
+ *     .seat-card   the visible glass card
+ *     .seat-dice   slot the dice moves into on this player's turn
+ * layout.css puts both parts on the game grid.
+ * ============================================================ */
+
+/* ---------- Colour hooks ---------- */
+.card-red,    .dot-red,    .seat-red,    .banner-red    { --pc: var(--red);    --pc-d: var(--red-dark); }
+.card-green,  .dot-green,  .seat-green,  .banner-green  { --pc: var(--green);  --pc-d: var(--green-dark); }
+.card-yellow, .dot-yellow, .seat-yellow, .banner-yellow { --pc: var(--yellow); --pc-d: var(--yellow-dark); }
+.card-blue,   .dot-blue,   .seat-blue,   .banner-blue   { --pc: var(--blue);   --pc-d: var(--blue-dark); }
+
+/* A plain coloured dot (win standings, menu). */
+.pc-dot {
+  display: inline-block;
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: linear-gradient(160deg, var(--pc), var(--pc-d));
+}
+
+/* ---------- Player panel ---------- */
+.players-panel,
+.player-card { display: contents; }
+
+.seat-card {
+  position: relative;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px 8px 8px;
+  border-radius: 22px;
+  background: var(--seat-idle);
+  -webkit-backdrop-filter: saturate(160%) blur(18px);
+  backdrop-filter: saturate(160%) blur(18px);
+  box-shadow: var(--shadow-1), inset 0 0 0 0.5px var(--hairline);
+  opacity: 0.92;
+  transition: box-shadow 0.35s var(--ease), background 0.35s var(--ease), opacity 0.35s ease;
+}
+
+/* Right-hand panels mirror the left ones: avatar on the outer edge. */
+.card-green .seat-card,
+.card-yellow .seat-card {
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 8px 8px 8px 14px;
+  text-align: right;
+}
+.card-green .pc-avatar,
+.card-yellow .pc-avatar { order: 2; }
+.card-green .pc-head, .card-yellow .pc-head,
+.card-green .pc-sub,  .card-yellow .pc-sub,
+.card-green .pc-dots, .card-yellow .pc-dots { justify-content: flex-end; }
+
+/* Avatar: a coloured disc with an initial, or a robot for bots. */
+.pc-avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: #fff;
+  font: 700 18px/1 var(--font-round);
+  background:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0) 52%),
+    linear-gradient(165deg, var(--pc), var(--pc-d));
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.55), 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+.card-yellow .pc-avatar { color: #4a3500; }
+.pc-avatar svg {
+  width: 62%;
+  height: 62%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.pc-avatar svg .eye { fill: currentColor; stroke: none; }
+
+/* Finishing position, shown once a player is done. */
+.pc-rank {
+  display: none;
+  position: absolute;
+  right: -5px;
+  top: -5px;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 4px;
+  border-radius: 10px;
+  background: var(--gold);
+  color: #2a1800;
+  font: 800 11px/19px var(--font-round);
+  text-align: center;
+  box-shadow: 0 0 0 2px var(--panel);
+}
+.player-card.finished .pc-rank { display: block; }
+.card-green .pc-rank, .card-yellow .pc-rank { right: auto; left: -5px; }
+
+.pc-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+.pc-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.pc-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14.5px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  /* Up to two lines, then an ellipsis: "Bot Comet" wraps instead of becoming "Bot Co…". */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow-wrap: break-word;
+}
+.pc-name-one {
+  display: block;
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+/* A long single word ("Alexandria") is set a touch smaller so it usually fits. */
+.pc-name-long { letter-spacing: -0.02em; }
+.pc-team {
+  flex: none;
+  padding: 3px 6px;
+  border-radius: 999px;
+  background: var(--fill);
+  color: var(--muted);
+  font: 700 10px/1 var(--font);
+}
+.pc-sub {
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+.pc-tag { overflow: hidden; text-overflow: ellipsis; }
+
+/* Home pips: hollow until a token reaches the centre. */
+.pc-dots { display: flex; align-items: center; gap: 5px; }
+.pc-home {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--pc);
+  opacity: 0.5;
+  transition: background 0.3s ease, opacity 0.3s ease, transform 0.3s var(--ease);
+}
+.pc-home.done {
+  background: linear-gradient(160deg, var(--pc), var(--pc-d));
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
+  opacity: 1;
+  transform: scale(1.08);
+}
+
+/* Whose turn is it: coloured ring + soft glow, pulsing avatar. */
+.player-card.active .seat-card {
+  opacity: 1;
+  background: var(--panel);
+  box-shadow: 0 0 0 2px var(--pc), 0 10px 22px -8px rgba(0, 0, 0, 0.3), var(--shadow-1);
+}
+@supports (color: color-mix(in srgb, red, white)) {
+  .player-card.active .seat-card {
+    background: color-mix(in srgb, var(--pc) 9%, var(--panel));
+    box-shadow: 0 0 0 2px var(--pc), 0 12px 26px -8px color-mix(in srgb, var(--pc) 55%, transparent), var(--shadow-1);
+  }
+}
+.player-card.active .pc-avatar { animation: avatarPulse 1.8s ease-out infinite; }
+.player-card.finished .seat-card { opacity: 0.72; }
+
+/* ---------- Dice slot ---------- */
+.seat-dice {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+.player-card.active > .seat-dice { display: flex; }
+.seat-dice.arrive { animation: diceArrive 0.5s var(--ease) both; }
+
+/* ---------- Turn banner ---------- */
+.hud {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.turn-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 8px 18px 8px 14px;
+  border-radius: 999px;
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+  backdrop-filter: saturate(180%) blur(18px);
+  box-shadow: var(--shadow-1), inset 0 0 0 0.5px var(--hairline);
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+.turn-banner > * { animation: bannerIn 0.35s var(--ease) both; }
+.banner-dot {
+  flex: none;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: linear-gradient(160deg, var(--pc, var(--accent)), var(--pc-d, var(--pc, var(--accent))));
+  box-shadow: 0 0 0 3px rgba(127, 127, 127, 0.18);
+}
+@supports (color: color-mix(in srgb, red, white)) {
+  .banner-dot { box-shadow: 0 0 0 3px color-mix(in srgb, var(--pc, var(--accent)) 26%, transparent); }
+}
+.thinking .banner-dot { animation: dotPulse 1s ease-in-out infinite; }
+.banner-name {
+  flex: none;
+  color: var(--ink);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.banner-sub {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.banner-over .banner-name { color: var(--accent-ink); }
+
+.teams-note {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ---------- Move log ---------- */
+.log-panel {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 0;
+  min-height: 0;
+  padding: 12px 8px 8px 12px;
+  border-radius: 22px;
+  background: var(--seat-idle);
+  -webkit-backdrop-filter: saturate(160%) blur(18px);
+  backdrop-filter: saturate(160%) blur(18px);
+  box-shadow: var(--shadow-1), inset 0 0 0 0.5px var(--hairline);
+}
+.log-panel h3 {
+  flex: none;
+  padding: 0 6px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.log-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 4px;
+  scrollbar-width: thin;
+}
+.log-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  line-height: 1.3;
+}
+.log-item:first-child { background: var(--fill-2); }
+.log-turn {
+  flex: none;
+  min-width: 26px;
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+.log-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--pc, var(--muted));
+}

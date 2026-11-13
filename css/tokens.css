@@ -1,0 +1,100 @@
+/* ============================================================
+ * Ludo Master - css/tokens.css
+ * The pawns: glossy beads with a white ring, centred with margins
+ * (so transform stays free for hops and pulses), shrunk when several
+ * share a cell ([data-stack] is set by TokenRenderer).
+ * ============================================================ */
+
+.token {
+  --tk: 4.667%;                       /* 0.70 of a board cell (the layer is 15 cells wide) */
+  --c: var(--accent);
+  --c-d: var(--accent-2);
+  --ring: 1.5px;
+  position: absolute;
+  width: var(--tk);
+  aspect-ratio: 1;
+  /* Percent margins resolve against the layer's width, like the width does,
+   * so this centres the piece on its left/top point at any stack size. */
+  margin: calc(var(--tk) * -0.5) 0 0 calc(var(--tk) * -0.5);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 26%, rgba(255, 255, 255, 0.62) 0, rgba(255, 255, 255, 0) 52%),
+    radial-gradient(circle at 50% 56%, var(--c) 58%, var(--c-d) 100%);
+  box-shadow:
+    0 0 0 var(--ring) rgba(255, 255, 255, 0.96),
+    0 2px 5px rgba(0, 0, 0, 0.34);
+  transition:
+    left var(--step, 0.18s) cubic-bezier(0.4, 0, 0.2, 1),
+    top var(--step, 0.18s) cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.2s var(--ease),
+    margin 0.2s var(--ease);
+  cursor: default;
+}
+
+/* Specular dot on top of the bead. */
+.token::before {
+  content: "";
+  position: absolute;
+  left: 20%;
+  top: 12%;
+  width: 34%;
+  height: 22%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+  filter: blur(0.4px);
+  pointer-events: none;
+}
+
+/* Invisible oversized hit area: on a phone the visible piece is only
+ * ~15-20px wide, far below a comfortable finger target. */
+.token::after {
+  content: "";
+  position: absolute;
+  inset: -55%;
+  border-radius: 50%;
+}
+
+.token-red    { --c: var(--red);    --c-d: var(--red-dark); }
+.token-green  { --c: var(--green);  --c-d: var(--green-dark); }
+.token-yellow { --c: var(--yellow); --c-d: var(--yellow-dark); }
+.token-blue   { --c: var(--blue);   --c-d: var(--blue-dark); }
+
+/* Several pieces on one cell: smaller, arranged by PositionResolver. */
+.token[data-stack="2"] { --tk: 3.333%; }
+.token[data-stack="3"] { --tk: 3.067%; }
+.token[data-stack="4"] { --tk: 2.933%; }
+
+/* Legal-move pulse */
+.token.movable {
+  cursor: pointer;
+  animation: tokenPulse 1.05s ease-in-out infinite;
+}
+
+/* Picked-up look */
+.token.selected {
+  transform: translateY(-14%) scale(1.12);
+  z-index: 300 !important;
+}
+
+/* Fly-back when captured */
+.token.captured { animation: captureFly 0.5s ease-in; }
+
+/* Illegal click wiggle */
+.token.nope { animation: nope 0.4s ease; }
+
+/* A little hop on every step of a walk. */
+.token.walking {
+  animation: tokenHop var(--step, 0.18s) ease-in-out infinite;
+  box-shadow:
+    0 0 0 var(--ring) rgba(255, 255, 255, 0.96),
+    0 5px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Small boards: a thinner ring, an even more forgiving hit area. */
+@media (max-width: 520px), (max-height: 520px) {
+  .token { --ring: 1.25px; }
+  .token::after { inset: -75%; }
+}
+@media (min-width: 900px) and (min-height: 700px) {
+  .token { --ring: 2px; }
+}
